@@ -286,6 +286,53 @@ def match_attack_techniques(text: str) -> list[str]:
     return match
 
 
+def extract_executive_summary(text: str) -> str:
+    if not text or not text.strip():
+        return "The source content was parsed successfully, but no usable text was recovered for review."
+
+    sentences = []
+    for chunk in re.split(r"(?<=[.!?])\s+|\n+", text):
+        clean = re.sub(r"\s+", " ", chunk).strip()
+        if len(clean) < 35:
+            continue
+        if re.search(r"[{}=;]", clean[:120]):
+            continue
+        sentences.append(clean)
+
+    if not sentences:
+        return "The document was processed successfully but did not contain plain-language narrative details suitable for a deeper threat assessment."
+
+    priority_terms = [
+        "goal",
+        "source-grounded",
+        "output",
+        "design principle",
+        "architecture",
+        "execution",
+        "publishing",
+        "automation",
+        "analysis",
+        "blueprint",
+        "threat hunting",
+    ]
+    preferred: list[str] = []
+    for sentence in sentences:
+        lower = sentence.lower()
+        if any(term in lower for term in priority_terms):
+            preferred.append(sentence)
+
+    if preferred:
+        selected = []
+        for sentence in preferred:
+            clean = sentence.strip()
+            if clean not in selected and len(clean) > 35:
+                selected.append(clean)
+        if selected:
+            return " ".join(selected[:4])
+
+    return " ".join(sentences[:2])
+
+
 def summarize_preview(text: str) -> str:
     sentences = re.split(r"(?<=[.!?])\s+", text)
     parts = []
@@ -315,6 +362,26 @@ def generate_markdown_report(source: str, text: str, evidence: Evidence, techniq
     ]
     for idx, step in enumerate(PIPELINE_STEPS, start=1):
         lines.append(f"{idx}. {step}")
+
+    has_evidence = any(
+        [
+            evidence.ips,
+            evidence.domains,
+            evidence.urls,
+            evidence.hashes,
+            evidence.files,
+            evidence.processes,
+            evidence.timestamps,
+            techniques,
+        ]
+    )
+
+    lines += ["", "## Executive Summary", ""]
+    if has_evidence:
+        lines.append("This document contains detectable indicators and the analysis below focuses on those findings.")
+    else:
+        lines.append(extract_executive_summary(text))
+
     lines += [
         "",
         "## Extracted Evidence",

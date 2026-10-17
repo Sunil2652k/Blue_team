@@ -1,7 +1,13 @@
 import json
 from pathlib import Path
 
-from threat_hunting_pipeline import Evidence, enrich_indicators, match_attack_techniques, normalize_evidence
+from threat_hunting_pipeline import (
+    Evidence,
+    enrich_indicators,
+    generate_markdown_report,
+    match_attack_techniques,
+    normalize_evidence,
+)
 
 
 def test_normalize_evidence_extracts_indicators() -> None:
@@ -65,3 +71,26 @@ def test_enrich_indicators_returns_status_and_results(monkeypatch) -> None:
     assert "reports" in result["indicators"]["ips"][0]
     assert "login.example.com" in result["summary"]
     assert calls["url"].startswith("https://www.virustotal.com")
+
+
+def test_generate_markdown_report_includes_blueprint_summary_when_no_indicators() -> None:
+    text = """
+    Goal
+    Submit one threat research URL or upload one write-up; generate a source-grounded hunt plan.
+    Outputs
+    PDF report, Markdown report, IOC CSV/JSON, source metadata and evidence links.
+    Design principle
+    Every key claim, IOC, ATT&CK mapping and query should be traceable to evidence.
+    """
+
+    report = generate_markdown_report(
+        "sample_blueprint.pdf",
+        text,
+        Evidence(ips=[], domains=[], urls=[], hashes=[], files=[], processes=[], timestamps=[]),
+        [],
+        {"status": "Skipped", "details": "Set VT_API_KEY to enable reputation enrichment."},
+    )
+
+    assert "## Executive Summary" in report
+    assert "source-grounded hunt plan" in report
+    assert "traceable to evidence" in report
