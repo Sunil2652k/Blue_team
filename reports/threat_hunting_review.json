@@ -1,5 +1,5 @@
 {
-  "source": "C:\\Users\\sunil\\Downloads\\cvereport.pdf",
+  "source": "C:/Users/sunil/Downloads/blog_to_threat_hunting_complete_blueprint.pdf",
   "pipeline": [
     "Input",
     "Safe Extraction",
@@ -12,14 +12,22 @@
   ],
   "evidence": {
     "ips": [],
-    "domains": [],
+    "domains": [
+      "example.com",
+      "github.com"
+    ],
     "urls": [],
     "hashes": [],
     "files": [],
     "processes": [],
     "timestamps": []
   },
-  "attack_techniques": [],
+  "attack_techniques": [
+    "Credential Access",
+    "Persistence",
+    "Privilege Escalation",
+    "Exfiltration"
+  ],
   "enrichment": {
     "status": "Skipped",
     "details": "Set VT_API_KEY to enable reputation enrichment."

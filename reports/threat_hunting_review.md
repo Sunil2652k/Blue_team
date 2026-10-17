@@ -1,7 +1,7 @@
 # Threat Hunting Review
 
-- Generated: 2026-10-17 12:12:48 UTC
-- Source: C:\Users\sunil\Downloads\blog_to_threat_hunting_complete_blueprint.pdf
+- Generated: 2026-10-17 14:14:31 UTC
+- Source: C:/Users/sunil/Downloads/blog_to_threat_hunting_complete_blueprint.pdf
 
 ## Pipeline Summary
 
@@ -35,7 +35,7 @@ This document contains detectable indicators and the analysis below focuses on t
 
 ## ATT&CK Mapping
 
-- No direct keyword matches
+- Credential Access, Persistence, Privilege Escalation, Exfiltration
 
 ## Human Review Checklist
 
