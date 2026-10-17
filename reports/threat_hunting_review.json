@@ -1,5 +1,5 @@
 {
-  "source": ".\\sample_hunt_input.txt",
+  "source": "sample_hunt_input.txt",
   "pipeline": [
     "Input",
     "Safe Extraction",
@@ -16,10 +16,7 @@
     ],
     "domains": [
       "example-cdn.net",
-      "login.example-cdn.net",
-      "malware.exe",
-      "powershell.exe",
-      "rundll32.exe"
+      "login.example-cdn.net"
     ],
     "urls": [
       "https://example-cdn.net/login"

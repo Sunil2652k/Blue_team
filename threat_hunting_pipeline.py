@@ -13,8 +13,8 @@ This script implements the staged workflow shown in the blueprint:
 
 Example:
     python threat_hunting_pipeline.py https://example.com
-    python threat_hunting_pipeline.py .\sample_hunt_input.txt --output-dir .\out
-    python threat_hunting_pipeline.py .\sample_hunt_input.txt --git-publish
+    python threat_hunting_pipeline.py .\\sample_hunt_input.txt --output-dir .\\out
+    python threat_hunting_pipeline.py .\\sample_hunt_input.txt --git-publish
 """
 
 from __future__ import annotations
@@ -90,6 +90,13 @@ class HTMLTextExtractor(HTMLParser):
         return "\n".join(self.parts)
 
 
+def fetch_json(url: str, headers: dict[str, str] | None = None, timeout: int = 20) -> dict:
+    request = Request(url, headers=headers or {"User-Agent": "Mozilla/5.0"})
+    with urlopen(request, timeout=timeout) as response:
+        payload = response.read()
+    return json.loads(payload.decode("utf-8", errors="replace"))
+
+
 def safe_http_get(url: str) -> str:
     req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urlopen(req, timeout=20) as response:
@@ -99,6 +106,62 @@ def safe_http_get(url: str) -> str:
     except UnicodeDecodeError:
         content = body.decode("latin-1", errors="replace")
     return content
+
+
+def enrich_indicators(ips: list[str], domains: list[str], hashes: list[str]) -> dict[str, object]:
+    api_key = os.getenv("VT_API_KEY")
+    if not api_key:
+        return {
+            "status": "skipped",
+            "summary": "VT_API_KEY not set; enrichment skipped.",
+            "indicators": {"ips": [f"{ip} | reports unavailable" for ip in ips[:5]], "domains": [f"{domain} | reports unavailable" for domain in domains[:5]], "hashes": [f"{value} | reports unavailable" for value in hashes[:5]]},
+        }
+
+    headers = {"x-apikey": api_key, "User-Agent": "BlueTeamThreatHuntingPipeline"}
+    enriched: dict[str, list[str]] = {"ips": [], "domains": [], "hashes": []}
+    description_parts: list[str] = []
+
+    for ip in ips[:5]:
+        try:
+            result = fetch_json(f"https://www.virustotal.com/api/v3/ip_addresses/{ip}", headers=headers)
+            attrs = result.get("data", {}).get("attributes", {})
+            stats = attrs.get("last_analysis_stats", {})
+            malicious = int(stats.get("malicious", 0))
+            suspicious = int(stats.get("suspicious", 0))
+            reputation = attrs.get("reputation")
+            enriched["ips"].append(f"{ip} | vt_reports={malicious + suspicious} | reputation={reputation if reputation is not None else 'unknown'}")
+            description_parts.append(ip)
+        except Exception:
+            enriched["ips"].append(f"{ip} | reports unavailable")
+
+    for domain in domains[:5]:
+        try:
+            result = fetch_json(f"https://www.virustotal.com/api/v3/domains/{domain}", headers=headers)
+            attrs = result.get("data", {}).get("attributes", {})
+            stats = attrs.get("last_analysis_stats", {})
+            malicious = int(stats.get("malicious", 0))
+            suspicious = int(stats.get("suspicious", 0))
+            reputation = attrs.get("reputation")
+            enriched["domains"].append(f"{domain} | vt_reports={malicious + suspicious} | reputation={reputation if reputation is not None else 'unknown'}")
+            description_parts.append(domain)
+        except Exception:
+            enriched["domains"].append(f"{domain} | reports unavailable")
+
+    for value in hashes[:5]:
+        try:
+            result = fetch_json(f"https://www.virustotal.com/api/v3/files/{value}", headers=headers)
+            attrs = result.get("data", {}).get("attributes", {})
+            stats = attrs.get("last_analysis_stats", {})
+            malicious = int(stats.get("malicious", 0))
+            suspicious = int(stats.get("suspicious", 0))
+            reputation = attrs.get("reputation")
+            enriched["hashes"].append(f"{value} | vt_reports={malicious + suspicious} | reputation={reputation if reputation is not None else 'unknown'}")
+            description_parts.append(value)
+        except Exception:
+            enriched["hashes"].append(f"{value} | reports unavailable")
+
+    summary = f"VT enrichment completed for {len(description_parts)} indicators: {', '.join(description_parts[:5])}"
+    return {"status": "success", "summary": summary, "indicators": enriched}
 
 
 def extract_html_text(html: str) -> str:
@@ -146,8 +209,10 @@ def read_input_source(source: str) -> str:
 
 def normalize_evidence(raw_text: str) -> Evidence:
     ips = sorted(set(re.findall(r"(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)", raw_text)))
-    domains = sorted(set(re.findall(r"(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}", raw_text)))
-    urls = sorted(set(re.findall(r"https?://[^\s\)\]>\"']+", raw_text)))
+    raw_domains = set(re.findall(r"(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}", raw_text))
+    excluded_tlds = {"exe", "dll", "ps1", "bat", "cmd", "vbs", "js", "jar", "zip", "rar", "docx", "xlsx", "pptx"}
+    domains = sorted({domain.rstrip(".,;:!?)]}>") for domain in raw_domains if domain.split(".")[-1].lower() not in excluded_tlds})
+    urls = sorted({url.rstrip(".,;:!?)]}>\"") for url in re.findall(r"https?://[^\s\)\]>\"']+", raw_text)})
     hashes = sorted(set(re.findall(r"\b(?:[A-Fa-f0-9]{32}|[A-Fa-f0-9]{40}|[A-Fa-f0-9]{64})\b", raw_text)))
     files = sorted(set(re.findall(r"\b[A-Za-z0-9_.-]+\.(?:exe|dll|ps1|bat|cmd|vbs|js|jar|zip|rar|docx|xlsx|pptx)\b", raw_text, flags=re.I)))
     processes = sorted(set(re.findall(r"\b(?:powershell|cmd\.exe|rundll32|wmic|mshta|regsvr32|certutil|bitsadmin|schtasks|netsh|whoami|psexec)\b", raw_text, flags=re.I)))
@@ -155,18 +220,23 @@ def normalize_evidence(raw_text: str) -> Evidence:
     return Evidence(ips=ips, domains=domains, urls=urls, hashes=hashes, files=files, processes=processes, timestamps=timestamps)
 
 
-def optional_enrichment(evidence: Evidence) -> dict[str, str]:
-    vt_api_key = os.getenv("VT_API_KEY")
-    if not vt_api_key:
+def optional_enrichment(evidence: Evidence) -> dict[str, object]:
+    if not os.getenv("VT_API_KEY"):
         return {"status": "Skipped", "details": "Set VT_API_KEY to enable reputation enrichment."}
+
+    enriched = enrich_indicators(evidence.ips, evidence.domains, evidence.hashes)
+    if enriched["status"] == "success":
+        return {
+            "status": "Enabled",
+            "details": "VirusTotal enrichment completed with live API lookups.",
+            "sample_indicators": enriched["indicators"],
+            "summary": enriched["summary"],
+        }
     return {
         "status": "Enabled",
-        "details": "VirusTotal enrichment hook is available; add API integration here as needed.",
-        "sample_indicators": {
-            "ips": evidence.ips[:5],
-            "domains": evidence.domains[:5],
-            "hashes": evidence.hashes[:5],
-        },
+        "details": "VirusTotal enrichment attempted, but the request failed.",
+        "sample_indicators": enriched["indicators"],
+        "summary": enriched["summary"],
     }
 
 

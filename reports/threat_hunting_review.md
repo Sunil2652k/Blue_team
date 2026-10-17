@@ -1,7 +1,7 @@
 # Threat Hunting Review
 
-- Generated: 2026-10-17 09:15:42 UTC
-- Source: .\sample_hunt_input.txt
+- Generated: 2026-10-17 09:18:19 UTC
+- Source: sample_hunt_input.txt
 
 ## Pipeline Summary
 
@@ -17,7 +17,7 @@
 ## Extracted Evidence
 
 - IPs: 203.0.113.44
-- Domains: example-cdn.net, login.example-cdn.net, malware.exe, powershell.exe, rundll32.exe
+- Domains: example-cdn.net, login.example-cdn.net
 - URLs: https://example-cdn.net/login
 - Hashes: 8F3A1B2C4D5E6F7890ABCDEF12345678, 9A7B6C5D4E3F2A1B0C9D8E7F6A5B4C3D
 - Files: malware.exe, powershell.exe, rundll32.exe
