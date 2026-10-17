@@ -1,0 +1,12 @@
+Incident summary:
+- Email lure contained a phishing link: https://example-cdn.net/login
+- Suspicious endpoint IP: 203.0.113.44
+- The host executed powershell.exe with a base64 command.
+- Domain observed: login.example-cdn.net
+- Hashes: 8F3A1B2C4D5E6F7890ABCDEF12345678 and 9A7B6C5D4E3F2A1B0C9D8E7F6A5B4C3D
+- Artifact: malware.exe was dropped to the user profile.
+- Time observed: 2026-10-14T09:34:00Z
+- Related process: rundll32.exe
+- Exfiltration suspected after outbound upload to a cloud storage endpoint.
+
+ATT&CK mapping candidates include execution, persistence, credential access, exfiltration, and defense evasion.

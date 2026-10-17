@@ -1,0 +1,59 @@
+{
+  "source": ".\\sample_hunt_input.txt",
+  "pipeline": [
+    "Input",
+    "Safe Extraction",
+    "Evidence Normalization",
+    "Optional Enrichment",
+    "Analysis Engine",
+    "Report Generation",
+    "Human Review",
+    "Git Publish"
+  ],
+  "evidence": {
+    "ips": [
+      "203.0.113.44"
+    ],
+    "domains": [
+      "example-cdn.net",
+      "login.example-cdn.net",
+      "malware.exe",
+      "powershell.exe",
+      "rundll32.exe"
+    ],
+    "urls": [
+      "https://example-cdn.net/login"
+    ],
+    "hashes": [
+      "8F3A1B2C4D5E6F7890ABCDEF12345678",
+      "9A7B6C5D4E3F2A1B0C9D8E7F6A5B4C3D"
+    ],
+    "files": [
+      "malware.exe",
+      "powershell.exe",
+      "rundll32.exe"
+    ],
+    "processes": [
+      "powershell",
+      "rundll32"
+    ],
+    "timestamps": [
+      "2026-10-14T09:34:00Z"
+    ]
+  },
+  "attack_techniques": [
+    "Credential Access",
+    "Initial Access",
+    "Execution",
+    "Exfiltration"
+  ],
+  "enrichment": {
+    "status": "Skipped",
+    "details": "Set VT_API_KEY to enable reputation enrichment."
+  },
+  "human_review": [
+    "Validate the source and indicators with host telemetry.",
+    "Confirm whether indications are malicious or benign.",
+    "Apply proper privacy review before publication."
+  ]
+}
