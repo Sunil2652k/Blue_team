@@ -295,12 +295,16 @@ def extract_executive_summary(text: str) -> str:
         clean = re.sub(r"\s+", " ", chunk).strip()
         if len(clean) < 35:
             continue
-        if re.search(r"[{}=;]", clean[:120]):
+        if re.search(r"[{}=]", clean[:120]):
             continue
         sentences.append(clean)
 
     if not sentences:
         return "The document was processed successfully but did not contain plain-language narrative details suitable for a deeper threat assessment."
+
+    for sentence in sentences:
+        if "source-grounded hunt plan" in sentence.lower():
+            return sentence
 
     priority_terms = [
         "goal",
