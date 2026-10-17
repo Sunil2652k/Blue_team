@@ -31,6 +31,16 @@ def test_match_attack_techniques_handles_common_keywords() -> None:
     assert "Exfiltration" in techniques
 
 
+def test_normalize_evidence_excludes_js_noise_domains() -> None:
+    text = "A JavaScript snippet used window.location.href and a.length, but the real domain was login.example.com."
+
+    evidence = normalize_evidence(text)
+
+    assert "login.example.com" in evidence.domains
+    assert "a.length" not in evidence.domains
+    assert "window.location.href" not in evidence.domains
+
+
 def test_enrich_indicators_returns_status_and_results(monkeypatch) -> None:
     calls = {}
 

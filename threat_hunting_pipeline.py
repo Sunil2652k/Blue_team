@@ -61,6 +61,21 @@ ATTCK_KEYWORDS = {
     "Exfiltration": ["upload", "download", "exfil", "cloud", "dropbox", "transfer"],
 }
 
+KNOWN_TLDS = {
+    "com", "net", "org", "io", "co", "gov", "edu", "info", "biz", "app", "cloud", "dev", "ai",
+    "us", "uk", "de", "fr", "in", "jp", "cn", "ru", "au", "ca", "it", "me", "tv", "xyz"
+}
+
+NOISE_DOMAIN_WORDS = {
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r",
+    "s", "t", "u", "v", "w", "x", "y", "z", "type", "style", "src", "href", "length", "target",
+    "prototype", "window", "document", "location", "main", "ajax", "search", "load", "render",
+    "query", "script", "console", "indexof", "replaceall", "call", "match", "class", "log", "string",
+    "array", "object", "return", "this", "value", "form", "event", "node", "error", "attr", "child",
+    "parent", "selector", "button", "text", "href", "onload", "onclick", "ready", "config", "module",
+    "global", "policy", "token", "util", "function", "var", "let", "const",
+}
+
 
 @dataclass
 class Evidence:
@@ -164,9 +179,18 @@ def enrich_indicators(ips: list[str], domains: list[str], hashes: list[str]) -> 
     return {"status": "success", "summary": summary, "indicators": enriched}
 
 
+def sanitize_html_text(html: str) -> str:
+    cleaned = re.sub(r"<script.*?</script>", " ", html, flags=re.I | re.S)
+    cleaned = re.sub(r"<style.*?</style>", " ", cleaned, flags=re.I | re.S)
+    cleaned = re.sub(r"<noscript.*?</noscript>", " ", cleaned, flags=re.I | re.S)
+    cleaned = re.sub(r"<[^>]+>", " ", cleaned)
+    cleaned = re.sub(r"\s+", " ", cleaned)
+    return cleaned.strip()
+
+
 def extract_html_text(html: str) -> str:
     parser = HTMLTextExtractor()
-    parser.feed(html)
+    parser.feed(sanitize_html_text(html))
     parser.close()
     return parser.get_text()
 
@@ -207,11 +231,24 @@ def read_input_source(source: str) -> str:
     return path.read_text(encoding="utf-8", errors="replace")
 
 
+def is_likely_domain(value: str) -> bool:
+    candidate = value.rstrip(".,;:!?)]}>")
+    if not re.match(r"^(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$", candidate):
+        return False
+    labels = [part.lower() for part in candidate.split(".")]
+    if any(not label or len(label) < 2 for label in labels[:-1]):
+        return False
+    if labels[-1] not in KNOWN_TLDS:
+        return False
+    if any(label in NOISE_DOMAIN_WORDS for label in labels):
+        return False
+    return True
+
+
 def normalize_evidence(raw_text: str) -> Evidence:
     ips = sorted(set(re.findall(r"(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)", raw_text)))
     raw_domains = set(re.findall(r"(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}", raw_text))
-    excluded_tlds = {"exe", "dll", "ps1", "bat", "cmd", "vbs", "js", "jar", "zip", "rar", "docx", "xlsx", "pptx"}
-    domains = sorted({domain.rstrip(".,;:!?)]}>") for domain in raw_domains if domain.split(".")[-1].lower() not in excluded_tlds})
+    domains = sorted({domain for domain in raw_domains if is_likely_domain(domain)})
     urls = sorted({url.rstrip(".,;:!?)]}>\"") for url in re.findall(r"https?://[^\s\)\]>\"']+", raw_text)})
     hashes = sorted(set(re.findall(r"\b(?:[A-Fa-f0-9]{32}|[A-Fa-f0-9]{40}|[A-Fa-f0-9]{64})\b", raw_text)))
     files = sorted(set(re.findall(r"\b[A-Za-z0-9_.-]+\.(?:exe|dll|ps1|bat|cmd|vbs|js|jar|zip|rar|docx|xlsx|pptx)\b", raw_text, flags=re.I)))
@@ -247,6 +284,22 @@ def match_attack_techniques(text: str) -> list[str]:
         if any(keyword.lower() in lower_text for keyword in keywords):
             match.append(technique)
     return match
+
+
+def summarize_preview(text: str) -> str:
+    sentences = re.split(r"(?<=[.!?])\s+", text)
+    parts = []
+    for sentence in sentences:
+        clean = re.sub(r"\s+", " ", sentence).strip()
+        if len(clean) < 40:
+            continue
+        if re.search(r"[{}=;]", clean[:120]):
+            continue
+        parts.append(clean)
+    summary = " ".join(parts[:6])
+    if not summary:
+        summary = "Source content was parsed successfully and normalized for threat-hunting analysis."
+    return summary[:1800]
 
 
 def generate_markdown_report(source: str, text: str, evidence: Evidence, techniques: list[str], enrichment: dict[str, str]) -> str:
@@ -292,8 +345,10 @@ def generate_markdown_report(source: str, text: str, evidence: Evidence, techniq
         "",
         "## Source Preview",
         "",
+        "The raw page text has been sanitized to remove embedded script and style noise before analysis.",
+        "",
         "```text",
-        text[:5000],
+        summarize_preview(text),
         "```",
     ]
     return "\n".join(lines)
