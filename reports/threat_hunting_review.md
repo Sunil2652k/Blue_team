@@ -1,7 +1,7 @@
 # Threat Hunting Review
 
-- Generated: 2026-10-17 09:18:19 UTC
-- Source: sample_hunt_input.txt
+- Generated: 2026-10-17 09:23:24 UTC
+- Source: https://unit42.paloaltonetworks.com/netscaler-zero-days-exploited/
 
 ## Pipeline Summary
 
@@ -16,13 +16,13 @@
 
 ## Extracted Evidence
 
-- IPs: 203.0.113.44
-- Domains: example-cdn.net, login.example-cdn.net
-- URLs: https://example-cdn.net/login
-- Hashes: 8F3A1B2C4D5E6F7890ABCDEF12345678, 9A7B6C5D4E3F2A1B0C9D8E7F6A5B4C3D
-- Files: malware.exe, powershell.exe, rundll32.exe
-- Processes: powershell, rundll32
-- Timestamps: 2026-10-14T09:34:00Z
+- IPs: None detected
+- Domains: 1920x900-5-300x300.jpg, 866.4.UNIT, Array.prototype.forEach.call, Microsoft.XMLHTTP, Object.assign, Object.prototype.toString.call, OneTrust.ToggleInfoDisplay, String.prototype.replaceAll, Util.yieldToMain, a.length, a.text, admin-ajax.php, arguments.length, b.target, button.text, c.charAt, c.getAttribute, c.indexOf, c.length, c.style.background, c.substring, ca.length, chevron-down-white.svg, classic-themes.min.css, cleanHeaderPrisma.prismaRenderer.html, console.log, counter.php, coveo.clear, coveo.noresultsfound, css.appendChild, css.styleSheet, css.styleSheet.cssText, css.type, ctxs.receiver, d.length, decodedCookie.split, define.amd, doc.createElement, doc.getElementById, doc.getElementsByTagName, docs.paloaltonetworks.com, document.addEventListener, document.cookie, document.createElement, document.createTextNode, document.documentMode, document.getElementById, document.getElementsByClassName, document.getElementsByTagName, document.head.appendChild, document.referrer, document.write, e.alt, e.load, e.loaded, e.preventDefault, e.querySelectorAll, e.root, e.rootMargin, e.src, e.stopImmediatePropagation, e.threshold, e.unobserve, el.getAttribute, el.setAttribute, email.trim, emailAddress.replace, en.json.gz, err.pl, etc.clientlibs, event.preventDefault, event.target.getAttribute, form.appendChild, form.attr, form.find, form.querySelector, form.serialize, forms.length, globalConfig.buildName, gomakethings.com, grecaptcha.enterprise.execute, grecaptcha.enterprise.ready, head.appendChild, httpaccess-vpn.log, httpd.conf, httpd.pid, icon-globe.svg, jQuery.ajax, l.length, language-btn.expand, language-dropdown.expand, li.active, lozad.observe, mail.addClass, mail.removeClass, mail.val, main.js.map, module.exports, name.length, name.replace, navigator.userAgent.match, ns.log, nsg64.deb, nsgbuild.deb, nsgclient18.deb, nsgpackage64.deb, nsgser18.deb, nsgsupport.deb, overlay.wpdevart, parent.appendChild, parent.removeChild, path.includes, path.indexOf, path.substring, re.test, receiver.min, receiver.min.css, regex.exec, requestInput.id, requestInput.name, requestInput.type, requestInput.value, s.observe, schema.org, script.onload, script.onreadystatechange, script.readyState, script.src, script.type, script.typerecapthaScript, script1.setAttribute, search.html, self.get, self.setLocale, sessionStorage.container, sessionStorage.getItem, sessionStorage.setItem, static.cloud.coveo.com, str.length, str.replace, str.substr, style.id, style.innerHTML, t.append, t.children, t.classList.toggle, t.forEach, t.getAttribute, t.intersectionRatio, t.isIntersecting, t.length, t.load, t.lozad, t.nodeName.toLowerCase, t.poster, t.querySelector, t.setAttribute, t.src, t.style.backgroundImage, t.target, text.replaceAll, this.replace, tokenData.action, tokenData.token, u.indexOf, ui.css, unit-nav-renderer.php, unit42.paloaltonetworks.com, webData.article, webData.author, webData.channel, webData.description, webData.internalonlytags, webData.internalonlytags.gtm, webData.keywords, webData.language, webData.pageName, webData.pageType, webData.pageURL, webData.property, webData.published, webData.resourceAssetID, window.Granite, window.IntersectionObserver, window.PAN, window.XMLHttpRequest, window.captchaInlineFormOnload, window.location.href, window.onCheqResponse, window.open, www.google.com, www.paloaltonetworks.com, xmlhttp.onreadystatechange, xmlhttp.open, xmlhttp.readyState, xmlhttp.responseText, xmlhttp.responseText.replaceAll, xmlhttp.send, xmlhttp.status
+- URLs: https://docs.paloaltonetworks.com/search.html#hd=All%20Prisma%20Cloud%20Documentation&hq=%40panproductcategory%3D%3D(%22Prisma%20Cloud%22, https://gomakethings.com/how-to-replace-a-section-of-a-string-with-another-one-with-vanilla-js/, https://static.cloud.coveo.com/searchui/v2.9159/js/CoveoJsSearch.Lazy.min.js, https://unit42.paloaltonetworks.com/netscaler-zero-days-exploited, https://unit42.paloaltonetworks.com/wp-admin/admin-ajax.php, https://unit42.paloaltonetworks.com/wp-content/plugins/like-dislike-counter-for-posts-pages-and-comments/ajax_counter.php, https://unit42.paloaltonetworks.com/wp-content/themes/unit42-v6/dist/scripts/polyfill.min.js, https://unit42.paloaltonetworks.com/wp-content/themes/unit42-v6/unit-nav-renderer.php?type=unit42&domain=en, https://www.google.com/recaptcha/enterprise.js?render=, https://www.paloaltonetworks.com, https://www.paloaltonetworks.com/etc/clientlibs/clean/imgs/chevron-down-white.svg
+- Hashes: 1bd314b661396c7086f6367fbbb48025e03ca2de69c073d53a8b0a38aa5fbb7d, 7489a0f93c67fa5cdaeb4b921d90594d, 780393bd3b1301fddae19de0565df5d2, 79c65fa04541032e251fa4796b97800374b63c7982593dd1a2e0db605d429186, ae22ef2517b5c0fb47f78745b9cb5260acee0e751b89bcd354640ff8bc8d29ec
+- Files: CoveoJsSearch.Lazy.min.js, api.js, criticalTop.min.js, criticalTopBase.min.js, criticalTopProductNav.min.js, defered.min.js, enterprise.js, loadSubNav.js, lozad.js, main.js, polyfill.min.js, recaptcha.js
+- Processes: PowerShell
+- Timestamps: 2026-09-30T00:00:00+00:00, 2026-09-30T13:00:04-07:00
 
 ## Optional Enrichment
 
@@ -31,7 +31,7 @@
 
 ## ATT&CK Mapping
 
-- Credential Access, Initial Access, Execution, Exfiltration
+- Credential Access, Execution, Privilege Escalation, Defense Evasion, Collection, Exfiltration
 
 ## Human Review Checklist
 
@@ -43,17 +43,13 @@
 ## Source Preview
 
 ```text
-Incident summary:
-- Email lure contained a phishing link: https://example-cdn.net/login
-- Suspicious endpoint IP: 203.0.113.44
-- The host executed powershell.exe with a base64 command.
-- Domain observed: login.example-cdn.net
-- Hashes: 8F3A1B2C4D5E6F7890ABCDEF12345678 and 9A7B6C5D4E3F2A1B0C9D8E7F6A5B4C3D
-- Artifact: malware.exe was dropped to the user profile.
-- Time observed: 2026-10-14T09:34:00Z
-- Related process: rundll32.exe
-- Exfiltration suspected after outbound upload to a cloud storage endpoint.
-
-ATT&CK mapping candidates include execution, persistence, credential access, exfiltration, and defense evasion.
-
+var maindomain_lang = 'https://www.paloaltonetworks.com'; var main_site_url = 'https://www.paloaltonetworks.com'; var ajax_url = 'https://unit42.paloaltonetworks.com/wp-admin/admin-ajax.php'; function getParameterByName(name, url) { if(url == null){ url = window.location.href; } name = name.replace(/[\[\]]/g, '\\$&'); var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'), results = regex.exec(url); if (!results) return null; if (!results[2]) return ''; return decodeURIComponent(results[2].replace(/\+/g, ' ')); } var container_q = getParameterByName('container'); var d_lang = 'en';
+.productNav2021Component[data-type="idira"] .product-2021-nav .product-2021-nav-main .nav-logo img { height: 23px; }
+Threat Brief: NetScaler Zero Days CVE-2026-88771 and CVE-2026-88772 Exploited in the Wild (Updated September 30)
+var globalConfig = {}; var webData = {}; webData.channel = "unit42"; webData.property = "unit42.paloaltonetworks.com"; webData.language = "en_us"; webData.pageType = "blogs"; webData.pageName = "unit42:netscaler-zero-days-exploited"; webData.pageURL = "https://unit42.paloaltonetworks.com/netscaler-zero-days-exploited"; webData.internalonlytags = {}; webData.internalonlytags.gtm = "Unit 42"; webData.article_title = "Threat Brief: NetScaler Zero Days CVE-2026-88771 and CVE-2026-88772 Exploited in the Wild (Updated September 30)"; webData.author = "Unit 42"; webData.published_time = "2026-09-30T13:00:04-07:00"; webData.description = ""; webData.keywords = "High Profile Threats,Vulnerabilities,Citrix,CVE-2026-88771,CVE-2026-88772,denial of service,Remote Code Execution,zero-day"; webData.resourceAssetID = "780393bd3b1301fddae19de0565df5d2";
+var globalConfig = {}; globalConfig.buildName = "UniqueResourceAssetsID_DEC022022";
+{"@context":"https:\/\/schema.org","@type":"BlogPosting","headline":"Threat Brief: NetScaler Zero Days CVE-2026-88771 and CVE-2026-88772 Exploited in the Wild (Updated September 30)","name":"Threat Brief: NetScaler Zero Days CVE-2026-88771 and CVE-2026-88772 Exploited in the Wild (Updated September 30)","description":"Unit 42 is aware of possible 0-day activity against NetScaler devices. Citrix reports CVE-2026-88771, CVE-2026-88772 have been exploited in the wild. ","url":"https:\/\/unit42.paloaltonetworks.com\/netscaler-zero-days-exploited\/","mainEntityOfPage":"https:\/\/unit42.paloaltonetworks.com\/netscaler-zero-days-exploited\/","datePublished":"2026-09-30T00:00:00+00:00","publisher":{"@type":"Organization","@id":"#panworg"},"image":{"@type":"ImageObject","url":"https:\/\/unit42.paloaltonetworks.com\/wp-content\/uploads\/2026\/09\/06_Vulnerabilities_1920x900-5-300x300.jpg","width":300,"height":300},"speakable":{"@type":"SpeakableSpecification","xPath":["\/html\/head\/title","\/html\/head\/meta[@name='description']\/@content"]},"author":[{"@type":"Person","name":"Unit 42"}]}
+img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px} /*# sourceURL=wp-img-auto-sizes-contain-inline-css */
+/*! This file is auto-generated */ .wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none} /*# sourceURL=/wp-includes/css/classic-themes.min.css */
+:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgb(252,185,0) 0%,rgb(255,105,0) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgb(255,105,0) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple:
 ```
